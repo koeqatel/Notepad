@@ -53,3 +53,5 @@ C:\Users\sande\Documents\Visual Studio 2017\Projects\Notepad\KladblokV2\obj\Debu
 C:\Users\sande\Documents\Visual Studio 2017\Projects\Notepad\KladblokV2\obj\Debug\KladblokV2.csproj.GenerateResource.Cache
 C:\Users\sande\Documents\Visual Studio 2017\Projects\Notepad\KladblokV2\obj\Debug\Notes.exe
 C:\Users\sande\Documents\Visual Studio 2017\Projects\Notepad\KladblokV2\obj\Debug\Notes.pdb
+C:\Users\sande\Documents\Visual Studio 2017\Projects\Notepad\KladblokV2\bin\Debug\Newtonsoft.Json.dll
+C:\Users\sande\Documents\Visual Studio 2017\Projects\Notepad\KladblokV2\bin\Debug\Newtonsoft.Json.xml

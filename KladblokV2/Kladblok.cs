@@ -11,6 +11,8 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Linq;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace KladblokV2
 {
@@ -35,12 +37,13 @@ namespace KladblokV2
         public static int ColorCode = 0;
         public static int BGColorCode;
         public string PickedColor;
+        public string Search = "<color='(.*?)'>(.*?)</c>(.*?)";
         public static Dictionary<string, string> Config = new Dictionary<string, string>();
         public int Showcounter = 0;
 
         public static string folderPath = PrimDrive + @"Users\" + Username + @"\Appdata\Roaming\SnSStudio\Notes\";
         public static string filePath = PrimDrive + @"Users\" + Username + @"\Appdata\Roaming\SnSStudio\Notes\Content.txt";
-        public static string ConfigPath = PrimDrive + @"Users\" + Username + @"\Appdata\Roaming\SnSStudio\Notes\Config.txt";
+        public static string ConfigPath = PrimDrive + @"Users\" + Username + @"\Appdata\Roaming\SnSStudio\Notes\Config.json";
         #endregion
 
         public Kladblok()
@@ -51,13 +54,13 @@ namespace KladblokV2
             ConsoleCheck.Checked = Convert.ToBoolean(Config["Console"]);
             var handle = GetConsoleWindow();
 
-            // Hide
+            // Hide console
             if (ConsoleCheck.Checked == false)
             {
                 ShowWindow(handle, SW_HIDE);
             }
-
-            // Show
+                       
+            // Show console
             if (ConsoleCheck.Checked == true)
             {
                 ShowWindow(handle, SW_SHOW);
@@ -74,12 +77,15 @@ namespace KladblokV2
 
         private void Kladblok_FormClosing(object sender, FormClosingEventArgs e)
         {
-            System.IO.File.WriteAllText(Kladblok.filePath, Edit_Textbox.Text);
+            //Save before the form closes.
+            if (System.IO.File.ReadAllText(Kladblok.filePath) != Edit_Textbox.Text)
+                System.IO.File.WriteAllText(Kladblok.filePath, Edit_Textbox.Text);
             SetConfig();
         }
 
         private void EditToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //Show edit panel.
             startMenuStrip.Visible = false;
             Textbox.Visible = false;
             TRT_Label.Visible = false;
@@ -89,9 +95,12 @@ namespace KladblokV2
 
         private void BackToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.IO.File.WriteAllText(Kladblok.filePath, Edit_Textbox.Text);
+            //Write text to file and then show main panel.
+            if (System.IO.File.ReadAllText(Kladblok.filePath) != Edit_Textbox.Text)
+                System.IO.File.WriteAllText(Kladblok.filePath, Edit_Textbox.Text);
             ReadText();
             Regex();
+            BG();
 
             startMenuStrip.Visible = true;
             Textbox.Visible = true;
@@ -104,14 +113,14 @@ namespace KladblokV2
         {
             var handle = GetConsoleWindow();
 
-            // Hide
+            // Hide console
             if (ConsoleCheck.Checked == false)
             {
                 ShowWindow(handle, SW_HIDE);
                 Config["Console"] = "false";
             }
 
-            // Show
+            // Show console
             if (ConsoleCheck.Checked == true)
             {
                 ShowWindow(handle, SW_SHOW);
@@ -121,23 +130,40 @@ namespace KladblokV2
 
         private void AutoSave_Tick(object sender, EventArgs e)
         {
-            System.IO.File.WriteAllText(Kladblok.filePath, Edit_Textbox.Text);
+            //Write to file
+            if (System.IO.File.ReadAllText(Kladblok.filePath) != Edit_Textbox.Text)
+                System.IO.File.WriteAllText(Kladblok.filePath, Edit_Textbox.Text);
         }
 
         private void chooseColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //Show color dialog
             if (colorDialog1.ShowDialog() == DialogResult.OK)
-                SendKeys.Send(colorDialog1.Color.Name);
+            {
+                int index = Edit_Textbox.SelectionStart;
+                //Write(index.ToString() + "\n", ConsoleColor.Green);
+                foreach (Match match in new Regex(Search, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled).Matches(this.Edit_Textbox.Text))
+                {
+                    GroupCollection groups = match.Groups;
+                    if (index > groups[0].Index && index <= groups[3].Index)
+                    {
+                        Edit_Textbox.Select(groups[1].Index, groups[1].Length);
+                        SendKeys.Send(colorDialog1.Color.Name);
+                    }
+                }
+            }
         }
 
         private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //Show color dialog for background
             if (colorDialog1.ShowDialog() == DialogResult.OK)
-                Kladblok.Config["Background Color"] = colorDialog1.Color.Name;
+                Kladblok.Config["Background_color"] = colorDialog1.Color.Name;
         }
 
         private void QuestionButt_Click(object sender, EventArgs e)
         {
+            //Just show a messagebox with some text about how the program works.
             MessageBox.Show("To add text click the edit button and start typing" + Environment.NewLine +
                             "To add a color type '<color='Colorname/Colorcode'>Text</c>' in the edit menu." + Environment.NewLine +
                             "The tags will dissapear in the main screen when typed correctly.");
@@ -145,41 +171,49 @@ namespace KladblokV2
 
         public void CreateFolder()
         {
+            //Create SnSStudio folder if it doesn't yet exist.
             if (!System.IO.Directory.Exists(folderPath))
             {
                 System.IO.Directory.CreateDirectory(folderPath);
             }
+
+            //Create text file if it doesn't yet exist.
             if (!System.IO.File.Exists(filePath))
             {
                 System.IO.File.WriteAllText(filePath, "New text file");
             }
+
+            //Create config file if it doesn't yet exist.
             if (!System.IO.File.Exists(ConfigPath))
             {
-                System.IO.File.WriteAllText(ConfigPath, "Background Color:control" + Environment.NewLine + "Console:true");
-                Config["Background Color"] = "control";
-                Config["Console"] = "true";
+                StringBuilder sb = new StringBuilder();
+                StringWriter sw = new StringWriter(sb);
+
+                using (JsonWriter writer = new JsonTextWriter(sw))
+                {
+                    writer.Formatting = Formatting.Indented;
+
+                    writer.WriteStartObject();
+                    writer.WritePropertyName("Background_color");
+                    writer.WriteValue("control");
+                    writer.WritePropertyName("Console");
+                    writer.WriteValue("true");
+                    writer.WriteEndObject();
+                }
+                System.IO.File.WriteAllText(ConfigPath, sw.ToString());
             }
         }
 
         public void ReadConfig()
         {
-            string line;
-            StreamReader ConfigReader = new StreamReader(ConfigPath);
-
-            while ((line = ConfigReader.ReadLine()) != null)
-            {
-                string[] parts = line.Split(':');
-                if (parts.Length == 2)
-                {
-                    Config[parts[0]] = Convert.ToString(parts[1]);
-                }
-            }
-
-            ConfigReader.Close();
+            dynamic stuff = JsonConvert.DeserializeObject(System.IO.File.ReadAllText(ConfigPath));
+            Config["Background_color"] = stuff.Background_color;
+            Config["Console"] = stuff.Console;
         }
 
         public void ReadText()
         {
+            //Read the text file.
             try
             {
                 Content = System.IO.File.ReadAllText(filePath);
@@ -198,22 +232,24 @@ namespace KladblokV2
 
         public void SetConfig()
         {
-            int i = 0;
-            System.IO.StreamWriter ConfigSetter = new System.IO.StreamWriter(ConfigPath);
-            foreach (KeyValuePair<string, string> config in Config)
-            {
-                if (i == 0)
-                {
-                    ConfigSetter.WriteLine("Background Color:" + config.Value);
-                }
-                if (i == 1)
-                {
-                    ConfigSetter.WriteLine("Console:" + config.Value);
-                }
-                i++;
+            //Write to the config file
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
 
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                writer.Formatting = Formatting.Indented;
+
+                writer.WriteStartObject();
+                foreach (KeyValuePair<string, string> config in Config)
+                {
+                    writer.WritePropertyName(config.Key);
+                    writer.WriteValue(config.Value);
+                }
+                writer.WriteEndObject();
             }
-            ConfigSetter.Close();
+
+            System.IO.File.WriteAllText(ConfigPath, sw.ToString());
         }
 
         public void Regex()
@@ -222,7 +258,7 @@ namespace KladblokV2
 
             //Read all of "Edit" and remove the tags.
             int End = 2147483647;
-            foreach (Match match in new Regex("<color='(.*?)'>(.*?)</c>(.*?)", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled).Matches(this.Textbox.Text))
+            foreach (Match match in new Regex(Search, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled).Matches(this.Textbox.Text))
             {
                 GroupCollection groups = match.Groups;
                 //Write to the console what is to be replaced
@@ -291,24 +327,26 @@ namespace KladblokV2
 
         public void BG()
         {
-            if (Config["Background Color"] == "")
+            //Check for the background color out of the config.
+            if (Config["Background_color"] == "")
             {
-                Config["Background Color"] = "control";
+                Config["Background_color"] = "control";
             }
-            if (int.TryParse(Config["Background Color"], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out BGColorCode))
+            //If it's a hex code read that and else just the plain name.
+            if (int.TryParse(Config["Background_color"], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out BGColorCode))
             {
-
-                BGColorCode = int.Parse(Config["Background Color"], NumberStyles.HexNumber);
+                BGColorCode = int.Parse(Config["Background_color"], NumberStyles.HexNumber);
                 Textbox.BackColor = Color.FromArgb(BGColorCode);
             }
             else
             {
-                Textbox.BackColor = Color.FromName(Config["Background Color"]);
+                Textbox.BackColor = Color.FromName(Config["Background_color"]);
             }
         }
 
         public void Write(string Text, ConsoleColor Color)
         {
+            //Own console.write function to make coloring shorter and code faster by checking for console.
             if (ConsoleCheck.Checked == true)
             {
                 Console.ForegroundColor = Color;
@@ -319,6 +357,7 @@ namespace KladblokV2
 
         public void Write(string Text)
         {
+            //Own console.write function to make code faster by checking for console.
             if (ConsoleCheck.Checked == true)
             {
                 Console.Write(Text);
