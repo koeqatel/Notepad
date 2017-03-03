@@ -65,6 +65,84 @@ namespace KladblokV2
             BG();
 
         }
+
+        private void Kladblok_Load(object sender, EventArgs e)
+        {
+            ReadText();
+            Regex();
+        }
+
+        private void Kladblok_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            System.IO.File.WriteAllText(Kladblok.filePath, Edit_Textbox.Text);
+            SetConfig();
+        }
+
+        private void EditToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            startMenuStrip.Visible = false;
+            Textbox.Visible = false;
+            TRT_Label.Visible = false;
+            editMenuStrip.Visible = true;
+            Edit_Textbox.Visible = true;
+        }
+
+        private void BackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.IO.File.WriteAllText(Kladblok.filePath, Edit_Textbox.Text);
+            ReadText();
+            Regex();
+
+            startMenuStrip.Visible = true;
+            Textbox.Visible = true;
+            TRT_Label.Visible = true;
+            editMenuStrip.Visible = false;
+            Edit_Textbox.Visible = false;
+        }
+
+        private void ConsoleCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            var handle = GetConsoleWindow();
+
+            // Hide
+            if (ConsoleCheck.Checked == false)
+            {
+                ShowWindow(handle, SW_HIDE);
+                Config["Console"] = "false";
+            }
+
+            // Show
+            if (ConsoleCheck.Checked == true)
+            {
+                ShowWindow(handle, SW_SHOW);
+                Config["Console"] = "true";
+            }
+        }
+
+        private void AutoSave_Tick(object sender, EventArgs e)
+        {
+            System.IO.File.WriteAllText(Kladblok.filePath, Edit_Textbox.Text);
+        }
+
+        private void chooseColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+                SendKeys.Send(colorDialog1.Color.Name);
+        }
+
+        private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+                Kladblok.Config["Background Color"] = colorDialog1.Color.Name;
+        }
+
+        private void QuestionButt_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("To add text click the edit button and start typing" + Environment.NewLine +
+                            "To add a color type '<color='Colorname/Colorcode'>Text</c>' in the edit menu." + Environment.NewLine +
+                            "The tags will dissapear in the main screen when typed correctly.");
+        }
+
         public void CreateFolder()
         {
             if (!System.IO.Directory.Exists(folderPath))
@@ -117,6 +195,7 @@ namespace KladblokV2
             Textbox.Text = Content;
             Edit_Textbox.Text = Content;
         }
+
         public void SetConfig()
         {
             int i = 0;
@@ -136,92 +215,80 @@ namespace KladblokV2
             }
             ConfigSetter.Close();
         }
+
         public void Regex()
         {
             Stopwatch TotalRegexTimer = Stopwatch.StartNew();
 
             //Read all of "Edit" and remove the tags.
-            //Set Fonts
-            int End = 0;
+            int End = 2147483647;
             foreach (Match match in new Regex("<color='(.*?)'>(.*?)</c>(.*?)", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled).Matches(this.Textbox.Text))
             {
                 GroupCollection groups = match.Groups;
-                if (ConsoleCheck.Checked == true)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    Console.Write("-=['{0}']=- ", (object)groups[2].Value.Replace("  ", "").Replace("\n", " | "));
-                    Console.ResetColor();
-                    Console.WriteLine("Color starts at {0}, the text runs from {1} to {2}.", (object)groups[0].Index, (object)groups[1].Index, (object)groups[3].Index);
-                }
+                //Write to the console what is to be replaced
+                Write("-=['" + (object)groups[2].Value.Replace("  ", "").Replace("\n", " | ") + "']=- ", ConsoleColor.DarkCyan);
+                Write("Color starts at " + (object)groups[0].Index + ", the text runs from " + (object)groups[1].Index + " to " + (object)groups[3].Index + "\n");
 
+                //Select from end of last tag to start of current tag and make it black again.
+                //This is done because otherwise the text keeps the color of the last tag.
+                this.Textbox.Select(End, groups[1].Index);
+                this.Textbox.SelectionColor = Color.Black;
+                this.Textbox.DeselectAll();
+
+                //Actually change the color of the text.
                 this.Textbox.Select(groups[2].Index, groups[2].Length);
                 if (int.TryParse(groups[1].Value, NumberStyles.HexNumber, (IFormatProvider)CultureInfo.InvariantCulture, out Kladblok.ColorCode))
                 {
                     Kladblok.ColorCode = int.Parse(groups[1].Value, NumberStyles.HexNumber);
                     this.Textbox.SelectionColor = Color.FromArgb(Kladblok.ColorCode);
-                    End = groups[3].Index;
                 }
                 else
                 {
                     this.Textbox.SelectionColor = Color.FromName(groups[1].Value);
-                    End = groups[3].Index;
                 }
+                End = groups[3].Index;
             }
-            this.Textbox.Select(End, this.Textbox.Text.Length);
-            this.Textbox.SelectionColor = Color.Black;
-            this.Textbox.DeselectAll();
+
             List<string> Colors = new List<string>();
             foreach (Match match in new Regex("<color='(.*?)'>", RegexOptions.IgnoreCase | RegexOptions.Compiled).Matches(this.Textbox.Text))
             {
+                //Show what color tags are found and add them to the list.
                 GroupCollection groups = match.Groups;
-                if (ConsoleCheck.Checked == true)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("'{0}' ", (object)groups[""].Value);
-                    Console.ResetColor();
-                    Console.WriteLine("starting at character {0} is detected", (object)groups[0].Index, (object)groups[1].Value);
-                }
-
+                Write("'" + (object)groups[""].Value + "' ", ConsoleColor.Red);
+                Write("starting at character " + (object)groups[0].Index + " is detected\n");
                 Colors.Add(groups[1].Value);
-
             }
+            //Clear all double values from the list.
             List<string> DistColors = Colors.Distinct().ToList();
-            if (ConsoleCheck.Checked == true)
-                Console.WriteLine();
+            Write("\n");
 
             foreach (string color in DistColors)
             {
                 Stopwatch TagRemoveTimer = Stopwatch.StartNew();
+                //Remove the tags from the edit panel and show a textbox witout the tags.
                 this.Textbox.Rtf = this.Textbox.Rtf.Replace("<color='" + color + "'>", "");
                 this.Textbox.Rtf = this.Textbox.Rtf.Replace("</c>", "");
-                if (ConsoleCheck.Checked == true)
-                {
-                    Console.ResetColor();
-                    Console.Write("Removed every ");
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("<color='{0}'> ", color);
-                    Console.ResetColor();
-                }
+
+                //Display what tags are removed.
+                Write("Removed every ");
+                Write("<color='" + color + "'> ", ConsoleColor.Red);
+
                 TagRemoveTimer.Stop();
-                if (ConsoleCheck.Checked == true)
-                {
-                    Console.Write(", this took ");
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(String.Format("{0}", TagRemoveTimer.ElapsedMilliseconds));
-                    Console.ResetColor();
-                    Console.Write(" Ms\n");
-                }
+
+                //Display how long removing the tag took.
+                Write(", this took ");
+                Write(TagRemoveTimer.ElapsedMilliseconds.ToString(), ConsoleColor.Red);
+                Write(" Ms\n");
+
             }
-            if (ConsoleCheck.Checked == true)
-            {
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine("End of current Regex\n\n\n");
-                Console.ResetColor();
-            }
+
+            Write("End of current Regex\n\n\n", ConsoleColor.Blue);
             TotalRegexTimer.Stop();
+            //Display how long the total process took.
             TRT_Label.Text = TotalRegexTimer.ElapsedMilliseconds + " ms";
 
         }
+
         public void BG()
         {
             if (Config["Background Color"] == "")
@@ -239,76 +306,23 @@ namespace KladblokV2
                 Textbox.BackColor = Color.FromName(Config["Background Color"]);
             }
         }
-        private void Kladblok_Load(object sender, EventArgs e)
-        {
-            ReadText();
-            Regex();
-        }
-        private void Kladblok_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            System.IO.File.WriteAllText(Kladblok.filePath, Edit_Textbox.Text);
-            SetConfig();
-        }
-        private void EditToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            startMenuStrip.Visible = false;
-            Textbox.Visible = false;
-            TRT_Label.Visible = false;
-            editMenuStrip.Visible = true;
-            Edit_Textbox.Visible = true;
-        }
-        private void BackToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            System.IO.File.WriteAllText(Kladblok.filePath, Edit_Textbox.Text);
-            ReadText();
-            Regex();
-            BG();
-            startMenuStrip.Visible = true;
-            Textbox.Visible = true;
-            TRT_Label.Visible = true;
-            editMenuStrip.Visible = false;
-            Edit_Textbox.Visible = false;
-        }
-        private void ConsoleCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            var handle = GetConsoleWindow();
 
-            // Hide
-            if (ConsoleCheck.Checked == false)
-            {
-                ShowWindow(handle, SW_HIDE);
-                Config["Console"] = "false";
-            }
-
-            // Show
+        public void Write(string Text, ConsoleColor Color)
+        {
             if (ConsoleCheck.Checked == true)
             {
-                ShowWindow(handle, SW_SHOW);
-                Config["Console"] = "true";
+                Console.ForegroundColor = Color;
+                Console.Write(Text);
+                Console.ResetColor();
             }
         }
-        private void AutoSave_Tick(object sender, EventArgs e)
-        {
-            System.IO.File.WriteAllText(Kladblok.filePath, Edit_Textbox.Text);
-        }
 
-        private void chooseColorToolStripMenuItem_Click(object sender, EventArgs e)
+        public void Write(string Text)
         {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-                SendKeys.Send(colorDialog1.Color.Name);
-        }
-
-        private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-                Kladblok.Config["Background Color"] = colorDialog1.Color.Name;
-        }
-
-        private void QuestionButt_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("To add text click the edit button and start typing" + Environment.NewLine +
-                            "To add a color type '<color='Colorname/Colorcode'>Text</c>' in the edit menu." + Environment.NewLine +
-                            "The tags will dissapear in the main screen when typed correctly.");
+            if (ConsoleCheck.Checked == true)
+            {
+                Console.Write(Text);
+            }
         }
     }
 }
