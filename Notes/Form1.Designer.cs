@@ -55,13 +55,14 @@
         '\'',
         '\''};
             this.editor.AutoIndentCharsPatterns = "";
-            this.editor.AutoScrollMinSize = new System.Drawing.Size(883, 588);
+            this.editor.AutoScrollMinSize = new System.Drawing.Size(883, 602);
             this.editor.BackBrush = null;
             this.editor.CharHeight = 14;
             this.editor.CharWidth = 8;
             this.editor.CommentPrefix = null;
             this.editor.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.editor.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+            this.editor.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.editor.IsReplaceMode = false;
             this.editor.Language = FastColoredTextBoxNS.Language.HTML;
             this.editor.LeftBracket = '<';

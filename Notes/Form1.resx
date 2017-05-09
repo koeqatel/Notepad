@@ -159,7 +159,9 @@
         &lt;span style="color: blue;"&gt;Hello world in blue&lt;/span&gt;&lt;br /&gt;
         &lt;span style="color: green;"&gt;Hello world in green&lt;/span&gt;&lt;br /&gt;
         
-        &lt;span class="blink" style="color: red;"&gt;Hello world in blinking green&lt;/span&gt;&lt;br /&gt;
+        &lt;span class="blink" style="color: red;"&gt;Hello world in blinking red&lt;/span&gt;&lt;br /&gt;
+        &lt;span class="blink" style="color: blue;"&gt;Hello world in blinking blue&lt;/span&gt;&lt;br /&gt;
+        &lt;span class="blink" style="color: green;"&gt;Hello world in blinking green&lt;/span&gt;&lt;br /&gt;
         
         &lt;script&gt;
             $('.blink').each(function() {
@@ -176,8 +178,7 @@
    
     &lt;/body&gt;
 &lt;/html&gt;
-        
-</value>
+        </value>
   </data>
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
