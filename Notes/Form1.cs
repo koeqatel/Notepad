@@ -57,6 +57,8 @@ namespace Notes
 
         private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            editor.Text = new UserData(true).notesHtml;
+
             viewer.DocumentText = "";
             viewer.DocumentText = getPrerequisites() + editor.Text;
         }
