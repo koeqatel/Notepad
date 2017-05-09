@@ -37,7 +37,9 @@ namespace KladblokV2
         public static int ColorCode = 0;
         public static int BGColorCode;
         public string PickedColor;
-        public string Search = "<color='(.*?)'>(.*?)</c>(.*?)";
+        public static string SearchStart = "<color='(.*?)'>";
+        public static string SearchEnd = "</c>";
+        public static string Search = SearchStart + "(.*?)" + SearchEnd + "(.*?)";
         public static Dictionary<string, string> Config = new Dictionary<string, string>();
         public int Showcounter = 0;
 
@@ -286,7 +288,7 @@ namespace KladblokV2
             }
 
             List<string> Colors = new List<string>();
-            foreach (Match match in new Regex("<color='(.*?)'>", RegexOptions.IgnoreCase | RegexOptions.Compiled).Matches(this.Textbox.Text))
+            foreach (Match match in new Regex(SearchStart, RegexOptions.IgnoreCase | RegexOptions.Compiled).Matches(this.Textbox.Text))
             {
                 //Show what color tags are found and add them to the list.
                 GroupCollection groups = match.Groups;
@@ -302,12 +304,12 @@ namespace KladblokV2
             {
                 Stopwatch TagRemoveTimer = Stopwatch.StartNew();
                 //Remove the tags from the edit panel and show a textbox witout the tags.
-                this.Textbox.Rtf = this.Textbox.Rtf.Replace("<color='" + color + "'>", "");
-                this.Textbox.Rtf = this.Textbox.Rtf.Replace("</c>", "");
+                this.Textbox.Rtf = this.Textbox.Rtf.Replace(SearchStart.Replace("(.*?)", color), "");
+                this.Textbox.Rtf = this.Textbox.Rtf.Replace(SearchEnd, "");
 
                 //Display what tags are removed.
                 Write("Removed every ");
-                Write("<color='" + color + "'> ", ConsoleColor.Red);
+                Write(SearchStart.Replace("(.*?)", color), ConsoleColor.Red);
 
                 TagRemoveTimer.Stop();
 
