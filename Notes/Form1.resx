@@ -135,6 +135,50 @@
         CgAAAAAAAAAAjQABAAH4/////P///woAAAAAAAAAAKQAAQAB9/////z///8KAAAAAAAAAACWAAEACw==
 </value>
   </data>
+  <data name="editor.Text" xml:space="preserve">
+    <value>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;!--Import Google Icon Font--&gt;
+        &lt;link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"&gt;
+        &lt;!--Import materialize.css--&gt;
+        &lt;link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/&gt;
+
+        &lt;!--Let browser know website is optimized for mobile--&gt;
+        &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"/&gt;
+        
+        &lt;style&gt;
+            * {
+                background-color: #F0F0F0;
+            }
+        &lt;/style&gt;
+    &lt;/head&gt;
+
+    &lt;body&gt;
+        &lt;span style="color: red;"&gt;Hello world in red&lt;/span&gt;&lt;br /&gt;
+        &lt;span style="color: blue;"&gt;Hello world in blue&lt;/span&gt;&lt;br /&gt;
+        &lt;span style="color: green;"&gt;Hello world in green&lt;/span&gt;&lt;br /&gt;
+        
+        &lt;span class="blink" style="color: red;"&gt;Hello world in blinking green&lt;/span&gt;&lt;br /&gt;
+        
+        &lt;script&gt;
+            $('.blink').each(function() {
+                var elem = $(this);
+                setInterval(function() {
+                    if (elem.css('visibility') == 'hidden') {
+                        elem.css('visibility', 'visible');
+                    } else {
+                        elem.css('visibility', 'hidden');
+                    }    
+                    }, 250);
+            });
+        &lt;/script&gt;
+   
+    &lt;/body&gt;
+&lt;/html&gt;
+        
+</value>
+  </data>
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

@@ -19,8 +19,13 @@ namespace Notes
 
         public UserData(bool loadFromFile)
         {
-            string s = File.ReadAllText(Environment.CurrentDirectory + "/userData.json");
-            notesHtml = JsonConvert.DeserializeObject<UserData>(s).notesHtml;
+            try
+            {
+                string s = File.ReadAllText(Environment.CurrentDirectory + "/userData.json");
+                notesHtml = JsonConvert.DeserializeObject<UserData>(s).notesHtml;
+            }
+            catch (Exception ex)
+            { }
         }
 
         public UserData()

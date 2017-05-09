@@ -55,14 +55,13 @@
         '\'',
         '\''};
             this.editor.AutoIndentCharsPatterns = "";
-            this.editor.AutoScrollMinSize = new System.Drawing.Size(379, 126);
+            this.editor.AutoScrollMinSize = new System.Drawing.Size(883, 588);
             this.editor.BackBrush = null;
             this.editor.CharHeight = 14;
             this.editor.CharWidth = 8;
             this.editor.CommentPrefix = null;
             this.editor.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.editor.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.editor.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.editor.IsReplaceMode = false;
             this.editor.Language = FastColoredTextBoxNS.Language.HTML;
             this.editor.LeftBracket = '<';
@@ -76,8 +75,7 @@
             this.editor.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("editor.ServiceColors")));
             this.editor.Size = new System.Drawing.Size(846, 559);
             this.editor.TabIndex = 0;
-            this.editor.Text = "<style>\r\n    * {\r\n        font-family: \"Microsoft Sans Serif\";\r\n        font-size" +
-    ": 8.25pt;\r\n    }\r\n</style>\r\n<div>\r\n    Hello World\r\n</div>";
+            this.editor.Text = resources.GetString("editor.Text");
             this.editor.Zoom = 100;
             // 
             // menuStrip1
