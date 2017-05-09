@@ -34,6 +34,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewer = new System.Windows.Forms.WebBrowser();
+            this.preReqFail = new System.Windows.Forms.Label();
+            this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.editor)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -62,7 +64,6 @@
             this.editor.CommentPrefix = null;
             this.editor.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.editor.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.editor.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.editor.IsReplaceMode = false;
             this.editor.Language = FastColoredTextBoxNS.Language.HTML;
             this.editor.LeftBracket = '<';
@@ -82,7 +83,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.editToolStripMenuItem});
+            this.editToolStripMenuItem,
+            this.reloadToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(846, 24);
@@ -107,11 +109,30 @@
             this.viewer.Size = new System.Drawing.Size(822, 544);
             this.viewer.TabIndex = 2;
             // 
+            // preReqFail
+            // 
+            this.preReqFail.AutoSize = true;
+            this.preReqFail.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(248)))), ((int)(((byte)(248)))));
+            this.preReqFail.Location = new System.Drawing.Point(681, 6);
+            this.preReqFail.Name = "preReqFail";
+            this.preReqFail.Size = new System.Drawing.Size(159, 13);
+            this.preReqFail.TabIndex = 3;
+            this.preReqFail.Text = "Failed to download jQuery library";
+            this.preReqFail.Visible = false;
+            // 
+            // reloadToolStripMenuItem
+            // 
+            this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
+            this.reloadToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
+            this.reloadToolStripMenuItem.Text = "Reload";
+            this.reloadToolStripMenuItem.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(846, 583);
+            this.Controls.Add(this.preReqFail);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.editor);
             this.Controls.Add(this.viewer);
@@ -133,6 +154,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.WebBrowser viewer;
+        private System.Windows.Forms.Label preReqFail;
+        private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
     }
 }
 

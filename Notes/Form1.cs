@@ -21,9 +21,17 @@ namespace Notes
 
         public string getPrerequisites()
         {
-            string jquery = new WebClient().DownloadString("https://code.jquery.com/jquery-1.12.4.min.js");
-
-            return "<script>" + jquery + "</script>";
+            try
+            {
+                string jquery = new WebClient().DownloadString(new UserData(true).jqueryUri);
+                preReqFail.Visible = false;
+                return "<script>" + jquery + "</script>";
+            }
+            catch (Exception ex)
+            {
+                preReqFail.Visible = true;
+                return "";
+            }
         }
 
         private void editToolStripMenuItem_Click(object sender, EventArgs e)
@@ -45,6 +53,12 @@ namespace Notes
             }
 
             new UserData(editor.Text).SaveToFile();
+        }
+
+        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.DocumentText = "";
+            viewer.DocumentText = getPrerequisites() + editor.Text;
         }
     }
 }
