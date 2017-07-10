@@ -1,37 +1,54 @@
 ﻿using System;
 using System.Net;
 using System.Windows.Forms;
+using cef;
+using CefSharp.WinForms.Internals;
+using CefSharp;
+using CefSharp.WinForms;
 
 namespace Notes
 {
     public partial class Form1 : Form
     {
+        public ChromiumWebBrowser chromeBrowser;
+
         public Form1()
         {
             InitializeComponent();
+            // Start the browser after initialize global component
+            InitializeChromium();
+        }
+
+        public void InitializeChromium()
+        {
+            CefSettings settings = new CefSettings();
+
+            // Initialize cef with the provided settings
+            Cef.Initialize(settings);
+
+            // Create a browser component
+            chromeBrowser = new ChromiumWebBrowser("https://google.com/");
+            chromeBrowser.IsBrowserInitializedChanged += ChromeBrowser_IsBrowserInitializedChanged;
+
+            // Add it to the form and fill it to the form window.
+            this.Controls.Add(chromeBrowser);
+            chromeBrowser.Dock = DockStyle.Fill;
+        }
+
+        private void ChromeBrowser_IsBrowserInitializedChanged(object sender, IsBrowserInitializedChangedEventArgs e)
+        {
+            chromeBrowser.LoadString(editor.Text, "about:notes");
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Cef.Shutdown();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             editor.Visible = false;
             editor.Text = new UserData(true).notesHtml;
-
-            viewer.DocumentText = getPrerequisites() + editor.Text;
-        }
-
-        public string getPrerequisites()
-        {
-            try
-            {
-                string jquery = new WebClient().DownloadString(new UserData(true).jqueryUri);
-                preReqFail.Visible = false;
-                return "<script>" + jquery + "</script>";
-            }
-            catch (Exception ex)
-            {
-                preReqFail.Visible = true;
-                return "";
-            }
         }
 
         private void editToolStripMenuItem_Click(object sender, EventArgs e)
@@ -41,15 +58,15 @@ namespace Notes
                 editToolStripMenuItem.Text = "Done";
 
                 editor.Visible = true;
-                viewer.Visible = false;
+                chromeBrowser.Visible = false;
             }
             else
             {
                 editToolStripMenuItem.Text = "Edit";
-                viewer.DocumentText = getPrerequisites() + editor.Text;
+                chromeBrowser.LoadString(editor.Text, "about:notes");
 
                 editor.Visible = false;
-                viewer.Visible = true;
+                chromeBrowser.Visible = true;
             }
 
             new UserData(editor.Text).SaveToFile();
@@ -59,8 +76,8 @@ namespace Notes
         {
             editor.Text = new UserData(true).notesHtml;
 
-            viewer.DocumentText = "";
-            viewer.DocumentText = getPrerequisites() + editor.Text;
+            chromeBrowser.Reload();
+            chromeBrowser.LoadString(editor.Text, "about:notes");
         }
     }
 }

@@ -33,9 +33,8 @@
             this.editor = new FastColoredTextBoxNS.FastColoredTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewer = new System.Windows.Forms.WebBrowser();
-            this.preReqFail = new System.Windows.Forms.Label();
             this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.preReqFail = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.editor)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -98,16 +97,12 @@
             this.editToolStripMenuItem.Text = "Edit";
             this.editToolStripMenuItem.Click += new System.EventHandler(this.editToolStripMenuItem_Click);
             // 
-            // viewer
+            // reloadToolStripMenuItem
             // 
-            this.viewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.viewer.Location = new System.Drawing.Point(12, 27);
-            this.viewer.MinimumSize = new System.Drawing.Size(20, 20);
-            this.viewer.Name = "viewer";
-            this.viewer.Size = new System.Drawing.Size(822, 544);
-            this.viewer.TabIndex = 2;
+            this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
+            this.reloadToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
+            this.reloadToolStripMenuItem.Text = "Reload";
+            this.reloadToolStripMenuItem.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
             // 
             // preReqFail
             // 
@@ -120,13 +115,6 @@
             this.preReqFail.Text = "Failed to download jQuery library";
             this.preReqFail.Visible = false;
             // 
-            // reloadToolStripMenuItem
-            // 
-            this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
-            this.reloadToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
-            this.reloadToolStripMenuItem.Text = "Reload";
-            this.reloadToolStripMenuItem.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -135,7 +123,6 @@
             this.Controls.Add(this.preReqFail);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.editor);
-            this.Controls.Add(this.viewer);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
@@ -153,7 +140,6 @@
         private FastColoredTextBoxNS.FastColoredTextBox editor;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.WebBrowser viewer;
         private System.Windows.Forms.Label preReqFail;
         private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
     }
