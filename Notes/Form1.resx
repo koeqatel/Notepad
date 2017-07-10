@@ -140,45 +140,37 @@
 &lt;html&gt;
     &lt;head&gt;
         &lt;!--Import Google Icon Font--&gt;
-        &lt;link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"&gt;
-        &lt;!--Import materialize.css--&gt;
-        &lt;link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/&gt;
-
+        &lt;link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"&gt;
+        
+        &lt;!-- Compiled and minified CSS --&gt;
+        &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css"&gt;
+          
         &lt;!--Let browser know website is optimized for mobile--&gt;
         &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"/&gt;
         
         &lt;style&gt;
             * {
-                background-color: #F0F0F0;
+            background-color: #F0F0F0;
             }
         &lt;/style&gt;
     &lt;/head&gt;
-
     &lt;body&gt;
         &lt;span style="color: red;"&gt;Hello world in red&lt;/span&gt;&lt;br /&gt;
         &lt;span style="color: blue;"&gt;Hello world in blue&lt;/span&gt;&lt;br /&gt;
         &lt;span style="color: green;"&gt;Hello world in green&lt;/span&gt;&lt;br /&gt;
+
+        &lt;a class="waves-effect waves-light btn"&gt;button&lt;/a&gt;
+        &lt;a class="waves-effect waves-light btn"&gt;&lt;i class="material-icons left"&gt;cloud&lt;/i&gt;button&lt;/a&gt;
+        &lt;a class="waves-effect waves-light btn"&gt;&lt;i class="material-icons right"&gt;cloud&lt;/i&gt;button&lt;/a&gt;
+
+        &lt;!--Import jQuery before materialize.js--&gt;
+        &lt;script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"&gt;&lt;/script&gt;
         
-        &lt;span class="blink" style="color: red;"&gt;Hello world in blinking red&lt;/span&gt;&lt;br /&gt;
-        &lt;span class="blink" style="color: blue;"&gt;Hello world in blinking blue&lt;/span&gt;&lt;br /&gt;
-        &lt;span class="blink" style="color: green;"&gt;Hello world in blinking green&lt;/span&gt;&lt;br /&gt;
-        
-        &lt;script&gt;
-            $('.blink').each(function() {
-                var elem = $(this);
-                setInterval(function() {
-                    if (elem.css('visibility') == 'hidden') {
-                        elem.css('visibility', 'visible');
-                    } else {
-                        elem.css('visibility', 'hidden');
-                    }    
-                    }, 250);
-            });
-        &lt;/script&gt;
-   
+        &lt;!-- Compiled and minified JavaScript --&gt;
+        &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"&gt;&lt;/script&gt;
     &lt;/body&gt;
 &lt;/html&gt;
-        </value>
+</value>
   </data>
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

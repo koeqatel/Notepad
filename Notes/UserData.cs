@@ -12,9 +12,8 @@ namespace Notes
     public class UserData
     {
 
-        public UserData(string html, string jquery = "https://code.jquery.com/jquery-1.12.4.min.js")
+        public UserData(string html)
         {
-            jqueryUri = jquery;
             notesHtml = html;
         }
 
@@ -25,17 +24,15 @@ namespace Notes
                 string s = File.ReadAllText(Environment.CurrentDirectory + "/userData.json");
 
                 notesHtml = JsonConvert.DeserializeObject<UserData>(s).notesHtml;
-                jqueryUri = JsonConvert.DeserializeObject<UserData>(s).jqueryUri;
             }
             catch (Exception ex)
-            { jqueryUri = "https://code.jquery.com/jquery-1.12.4.min.js"; }
+            { }
         }
 
         public UserData()
         { }
 
         public string notesHtml { get; set; }
-        public string jqueryUri { get; set; }
 
         public void SaveToFile()
         {
